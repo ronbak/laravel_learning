@@ -25,6 +25,8 @@ class Authenticate
             }
         }
 
+        //return redirect('/my_tasks');
+
         return $next($request);
     }
 }

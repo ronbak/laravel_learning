@@ -13,44 +13,124 @@
 
 use App\Task;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 Route::group(['middleware' => ['web']], function () {
+
+    //------------------------------------------------------------------
+
+    //---------------------------------------------------------
+    // Route::get('/tasks', 'TaskController@index');
+    // Route::post('/task', 'TaskController@store');
+    // Route::delete('/task/{task}', 'TaskController@destroy');
+    //---------------------------------------------------------
+
     /**
      * Show Task Dashboard
      */
-    Route::get('/', function () {
-        return view('tasks', [
-            'tasks' => Task::orderBy('created_at', 'asc')->get()
+    // Route::get('/', function () {
+    //     return view('tasks', [
+    //         'tasks' => Task::orderBy('created_at', 'asc')->get()
+    //     ]);
+    // });
+
+    // /**
+    //  * Add New Task
+    //  */
+    // Route::post('/task', function (Request $request) {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required|max:255',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return redirect('/')
+    //             ->withInput()
+    //             ->withErrors($validator);
+    //     }
+
+    //     $task = new Task;
+    //     $task->name = $request->name;
+    //     $task->save();
+
+    //     return redirect('/');
+    // });
+
+    // /**
+    //  * Delete Task
+    //  */
+    // Route::delete('/task/{id}', function ($id) {
+    //     Task::findOrFail($id)->delete();
+
+    //     return redirect('/');
+    // });
+//------------------------------------------------------------------------
+
+    // Authentication Routes...
+    Route::auth();
+
+    Route::get('/home', 'HomeController@index');
+
+    Route::get('/', function() {
+        return view('welcome');
+    });
+
+    Route::get('/test_guzzle', function () {
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'http://httpbin.org',
+            // You can set any number of default request options.
+            'timeout'  => 2.0,
         ]);
+
+        var_dump((json_encode($client))); die;
+
+        var_dump($client); die('for guzzle');
+
+        echo "in test";
     });
 
-    /**
-     * Add New Task
-     */
-    Route::post('/task', function (Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255',
-        ]);
+    Route::get('/my_tasks', 'TaskController@index');
+    Route::post('/my_tasks_add', 'TaskController@store');
+    Route::delete('/my_tasks_del/{task}', 'TaskController@destroy');
 
-        if ($validator->fails()) {
-            return redirect('/')
-                ->withInput()
-                ->withErrors($validator);
-        }
 
-        $task = new Task;
-        $task->name = $request->name;
-        $task->save();
+    // /**
+    //  * Create myself: task dashboard
+    //  */
+    // Route::get('/my_tasks', function () {
+    //     return view('my_tasks', [
+    //         'tasks' => Task::orderBy('created_at', 'asc')->get()
+    //         ]);
+    // });
 
-        return redirect('/');
-    });
 
-    /**
-     * Delete Task
-     */
-    Route::delete('/task/{id}', function ($id) {
-        Task::findOrFail($id)->delete();
+    // /**
+    //  * Create myself: add new task
+    //  */
+    // Route::post('/my_tasks_add', function(Request $request) {
+    //     $validator = Validator::make($request->all(), [
+    //         'name' => 'required | max:255',
+    //         ]);
 
-        return redirect('/');
-    });
+    //     if ($validator->fails()) {
+    //         return redirect('/')
+    //             ->withInput()
+    //             ->withErrors($validator);
+    //     }
+
+    //     $newTask = new Task;
+    //     $newTask->name = $request->name;
+    //     $newTask->save();
+
+    //     return redirect('/my_tasks');
+    // });
+
+
+    // /**
+    //  * Create myself: delete task
+    //  */
+    // Route::delete('/my_tasks_del/{id}', function($id) {
+    //     Task::findOrFail($id)->delete();
+    //     return redirect('/my_tasks');
+    // });
 });
