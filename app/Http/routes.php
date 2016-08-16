@@ -74,19 +74,17 @@ Route::group(['middleware' => ['web']], function () {
         return view('welcome');
     });
 
-    Route::get('/test_guzzle', function () {
-        $client = new Client([
-            // Base URI is used with relative requests
-            'base_uri' => 'http://httpbin.org',
-            // You can set any number of default request options.
-            'timeout'  => 2.0,
+    Route::get('/free_test', function() {
+        return view('free_test');
+    });
+
+    Route::post('/test_result', function (Request $request) {
+        $client = new Client();
+        $response = $client->request('POST', 'https://www.16personalities.com/test-results', [
+            'form_params' => $request->all(),
         ]);
 
-        var_dump((json_encode($client))); die;
-
-        var_dump($client); die('for guzzle');
-
-        echo "in test";
+        echo $response->getBody();
     });
 
     Route::get('/my_tasks', 'TaskController@index');
